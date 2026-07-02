@@ -1,0 +1,50 @@
+/* ============================================
+   VARIABLES — sistema de diseño "Marcador de Pádel"
+   Inspirado en las paredes de vidrio y la pelota
+   fluorescente de una cancha de pádel de noche.
+   ============================================ */
+
+:root {
+  /* --- Color: superficies --- */
+  --color-bg: #0e1826;
+  --color-bg-panel: #16263b;
+  --color-bg-panel-alt: #1c3049;
+  --color-border: #2a3f58;
+
+  /* --- Color: acentos --- */
+  --color-ball: #cbff3d;       /* pelota de pádel */
+  --color-ball-dim: #8fb32a;
+  --color-glass: #3ed6c4;      /* pared de vidrio */
+  --color-loss: #ff5c6c;
+  --color-invitado: #5b6b80;
+
+  /* --- Color: texto --- */
+  --color-text: #edeff2;
+  --color-text-muted: #8fa0b5;
+  --color-text-faint: #5b6b80;
+
+  /* --- Tipografía --- */
+  --font-display: "Oswald", "Arial Narrow", sans-serif;
+  --font-body: "Work Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
+
+  /* --- Radios --- */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 999px;
+
+  /* --- Espaciados --- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 40px;
+  --space-6: 64px;
+
+  /* --- Sombra --- */
+  --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.35);
+
+  /* --- Transición --- */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}

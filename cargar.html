@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cargar Partido — Americano de Pádel</title>
+  <meta name="description" content="Cargá el resultado de un partido: formato, parejas y sets. El ranking se actualiza al instante." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand"><span class="brand-mark">●</span> Ranking Americano</a>
+      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Abrir menú">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </button>
+      <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+        <a href="index.html">Ranking</a>
+        <a href="historial.html">Historial</a>
+        <a href="cargar.html" aria-current="page">Cargar Partido</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="page-header">
+        <span class="eyebrow" id="page-eyebrow">Nuevo resultado</span>
+        <h1 id="page-titulo">Cargar partido</h1>
+      </div>
+
+      <div id="editar-banner" class="feedback-banner" style="display:none;"></div>
+      <div id="feedback-banner" class="feedback-banner" role="status"></div>
+
+      <form class="form-card" id="form-cargar-partido" novalidate>
+
+        <div class="form-step">
+          <h2 class="form-step__title"><span class="form-step__num">1</span> Formato y fecha</h2>
+          <div class="pill-group" role="radiogroup" aria-label="Formato del partido">
+            <label class="pill-option">
+              <input type="radio" name="formato" value="1" />
+              <span>Al mejor de 1</span>
+            </label>
+            <label class="pill-option">
+              <input type="radio" name="formato" value="3" checked />
+              <span>Al mejor de 3</span>
+            </label>
+            <label class="pill-option">
+              <input type="radio" name="formato" value="5" />
+              <span>Al mejor de 5</span>
+            </label>
+          </div>
+          <div class="field-group field-group--fecha">
+            <label for="fecha-partido">Fecha</label>
+            <input type="date" id="fecha-partido" />
+          </div>
+        </div>
+
+        <div class="form-step">
+          <h2 class="form-step__title"><span class="form-step__num">2</span> Parejas</h2>
+          <div class="chips-grid" id="chips-grid" role="group" aria-label="Selección de jugadores"></div>
+
+          <div class="parejas-resumen">
+            <div class="resumen-pareja resumen-a">
+              <span class="resumen-pareja__label">Pareja A</span>
+              <span id="resumen-a-nombres">Elegí 2 jugadores</span>
+            </div>
+            <span class="resumen-vs">VS</span>
+            <div class="resumen-pareja resumen-b">
+              <span class="resumen-pareja__label">Pareja B</span>
+              <span id="resumen-b-nombres">Elegí 2 jugadores</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-step">
+          <h2 class="form-step__title"><span class="form-step__num">3</span> Resultado por set</h2>
+          <div class="sets-inputs" id="sets-inputs"></div>
+        </div>
+
+        <div class="form-step">
+          <h2 class="form-step__title"><span class="form-step__num">4</span> Vista previa</h2>
+          <div class="preview-panel" id="preview-panel">
+            <span class="stat-muted">Completá las parejas y al menos un set para ver la vista previa.</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" id="btn-limpiar" class="btn btn-secondary">Limpiar</button>
+          <button type="submit" class="btn btn-primary" id="btn-guardar">Guardar partido</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script src="js/nav.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/elo.js"></script>
+  <script src="js/partidos.js"></script>
+  <script src="js/cargar.js"></script>
+</body>
+</html>

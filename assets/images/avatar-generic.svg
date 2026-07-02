@@ -1,0 +1,6 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Avatar genérico">
+  <rect width="100" height="100" rx="50" fill="#1C3049"/>
+  <circle cx="50" cy="40" r="18" fill="#2A3F58"/>
+  <path d="M50 62c-19 0-32 11-32 26v6c0 4 3 6 6 6h52c3 0 6-2 6-6v-6c0-15-13-26-32-26z" fill="#2A3F58"/>
+  <circle cx="50" cy="40" r="18" fill="none" stroke="#3ED6C4" stroke-width="1.5" opacity="0.4"/>
+</svg>

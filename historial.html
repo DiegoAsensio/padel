@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Historial — Americano de Pádel</title>
+  <meta name="description" content="Historial completo de partidos jugados, resultados por set y variación de Elo." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand"><span class="brand-mark">●</span> Ranking Americano</a>
+      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Abrir menú">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </button>
+      <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+        <a href="index.html">Ranking</a>
+        <a href="historial.html" aria-current="page">Historial</a>
+        <a href="cargar.html">Cargar Partido</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="page-header">
+        <span class="eyebrow">Todos los partidos</span>
+        <h1>Historial</h1>
+        <p>Del más reciente al más antiguo, con el cambio de Elo que generó cada resultado.</p>
+      </div>
+
+      <div class="historial-container" id="match-list">
+        <p class="empty-state">Cargando historial…</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/nav.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/elo.js"></script>
+  <script src="js/partidos.js"></script>
+  <script src="js/historial.js"></script>
+</body>
+</html>
