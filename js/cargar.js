@@ -210,23 +210,16 @@ function generarSets(formato, setsIniciales) {
 }
 
 function leerSetsCargados() {
-  if (empateActivo) return [];
   return valoresSets.filter((s) => s.gamesA > 0 || s.gamesB > 0);
 }
 
 /* ---------------------------------------------------------------------
-   EMPATE — cuando el partido termina empatado no hay sets que definir:
-   se ocultan los steppers y se saltea la resolución de ganador/Elo.
+   EMPATE — el partido no tiene ganador, pero los games cargados (si los
+   hay) se siguen usando para el % de Games de cada jugador.
    --------------------------------------------------------------------- */
-
-function actualizarVisibilidadSets() {
-  const contenedorSets = document.getElementById("sets-inputs");
-  contenedorSets.style.display = empateActivo ? "none" : "";
-}
 
 function alternarEmpate(activo) {
   empateActivo = activo;
-  actualizarVisibilidadSets();
   actualizarPreview();
 }
 
@@ -244,10 +237,14 @@ function actualizarPreview() {
   }
 
   if (empateActivo) {
+    const sets = leerSetsCargados();
+    const resultado = resolverGanadorPartido(sets);
+    const huboGames = resultado.totalGamesA > 0 || resultado.totalGamesB > 0;
     preview.innerHTML = `
       <div class="preview-row"><span>Resultado</span><strong>Empate</strong></div>
+      ${huboGames ? `<div class="preview-row"><span>Games cargados</span><strong>${resultado.totalGamesA} - ${resultado.totalGamesB}</strong></div>` : ""}
       <div class="preview-row"><span>Cambio Elo para los 4 jugadores</span><strong>+${PUNTOS_EMPATE}</strong></div>
-      <div class="preview-row"><span class="stat-muted">El Invitado no suma puntos, como en cualquier partido.</span></div>
+      <div class="preview-row"><span class="stat-muted">El Invitado no suma puntos. ${huboGames ? "Los games cargados van a contar para el % de Games de cada uno." : "Podés cargar los sets si querés que los games cuenten para el % de Games."}</span></div>
     `;
     return;
   }
@@ -388,7 +385,6 @@ function activarModoEdicion(partido) {
   document.getElementById("fecha-partido").value = partido.fecha;
   document.getElementById("check-empate").checked = !!partido.empate;
   empateActivo = !!partido.empate;
-  actualizarVisibilidadSets();
 
   renderChips();
   actualizarResumenParejas();

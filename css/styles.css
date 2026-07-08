@@ -165,7 +165,30 @@ main {
 }
 
 .ranking-table {
-  min-width: 720px;
+  min-width: 980px;
+  table-layout: fixed;
+}
+
+/* Anchos fijos por columna. Con table-layout:fixed el ancho de cada
+   columna sale de acá (no del contenido), lo que evita un bug de WebKit
+   (Safari/iOS) donde un `display:flex` dentro de un <td> hace que el
+   cálculo automático de columnas falle y el texto de columnas vecinas
+   quede superpuesto. */
+.ranking-table col.col-pos { width: 60px; }
+.ranking-table col.col-jugador { width: 240px; }
+.ranking-table col.col-elo { width: 90px; }
+.ranking-table col.col-pj,
+.ranking-table col.col-pg,
+.ranking-table col.col-pp,
+.ranking-table col.col-pe { width: 64px; }
+.ranking-table col.col-pctv,
+.ranking-table col.col-pctg { width: 110px; }
+.ranking-table col.col-forma { width: 110px; }
+
+.ranking-table th,
+.ranking-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ranking-table th,
@@ -249,6 +272,16 @@ main {
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  min-width: 0;
+}
+
+.player-name {
+  font-weight: 600;
+  font-size: 1.05rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .avatar {
@@ -278,11 +311,6 @@ main {
 
 .ranking-table tbody tr.pos-3 .avatar {
   border-color: var(--color-text-faint);
-}
-
-.player-name {
-  font-weight: 600;
-  font-size: 1.05rem;
 }
 
 .elo-value {
@@ -650,7 +678,6 @@ main {
 
 .step-hint {
   margin-bottom: var(--space-3);
-  margin-top: var(--space-3);
   display: block;
 }
 
