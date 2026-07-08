@@ -26,6 +26,7 @@ function reiniciarStatsJugador(jugador) {
     partidos: 0,
     victorias: 0,
     derrotas: 0,
+    empates: 0,
     gamesFavor: 0,
     gamesContra: 0,
     forma: [],
@@ -62,40 +63,50 @@ function recalcularJugadoresDesdeCero(partidos) {
     const jB2 = obtenerJugadorPorId(jugadores, idB2);
 
     const resultado = resolverGanadorPartido(partido.sets);
-    const { cambioA, cambioB } = calcularCambioElo({
-      eloA1: jA1.elo,
-      eloA2: jA2.elo,
-      eloB1: jB1.elo,
-      eloB2: jB2.elo,
-      ganoA: resultado.ganoA,
-      totalGamesA: resultado.totalGamesA,
-      totalGamesB: resultado.totalGamesB,
-    });
+
+    // Empate: no hay ganador ni perdedor, así que no se usa la fórmula de
+    // Elo. Los 4 jugadores suman PUNTOS_EMPATE por igual (el Invitado,
+    // como siempre, no suma nada).
+    const { cambioA, cambioB } = partido.empate
+      ? { cambioA: PUNTOS_EMPATE, cambioB: PUNTOS_EMPATE }
+      : calcularCambioElo({
+          eloA1: jA1.elo,
+          eloA2: jA2.elo,
+          eloB1: jB1.elo,
+          eloB2: jB2.elo,
+          ganoA: resultado.ganoA,
+          totalGamesA: resultado.totalGamesA,
+          totalGamesB: resultado.totalGamesB,
+        });
 
     const cambios = {};
 
-    function aplicarCambio(jugador, cambio, gamesFavor, gamesContra, gano) {
+    function aplicarCambio(jugador, cambio, gamesFavor, gamesContra, tipoResultado) {
       cambios[jugador.id] = jugador.invitado ? 0 : cambio;
       if (jugador.invitado) return;
 
       jugador.elo += cambio;
       jugador.partidos += 1;
-      if (gano) jugador.victorias += 1;
-      else jugador.derrotas += 1;
+      if (tipoResultado === "W") jugador.victorias += 1;
+      else if (tipoResultado === "L") jugador.derrotas += 1;
+      else jugador.empates += 1;
       jugador.gamesFavor += gamesFavor;
       jugador.gamesContra += gamesContra;
 
-      jugador.forma.push(gano ? "W" : "L");
+      jugador.forma.push(tipoResultado);
       if (jugador.forma.length > FORMA_MAX_LARGO) jugador.forma.shift();
     }
 
-    aplicarCambio(jA1, cambioA, resultado.totalGamesA, resultado.totalGamesB, resultado.ganoA);
-    aplicarCambio(jA2, cambioA, resultado.totalGamesA, resultado.totalGamesB, resultado.ganoA);
-    aplicarCambio(jB1, cambioB, resultado.totalGamesB, resultado.totalGamesA, !resultado.ganoA);
-    aplicarCambio(jB2, cambioB, resultado.totalGamesB, resultado.totalGamesA, !resultado.ganoA);
+    const tipoA = partido.empate ? "E" : resultado.ganoA ? "W" : "L";
+    const tipoB = partido.empate ? "E" : resultado.ganoA ? "L" : "W";
+
+    aplicarCambio(jA1, cambioA, resultado.totalGamesA, resultado.totalGamesB, tipoA);
+    aplicarCambio(jA2, cambioA, resultado.totalGamesA, resultado.totalGamesB, tipoA);
+    aplicarCambio(jB1, cambioB, resultado.totalGamesB, resultado.totalGamesA, tipoB);
+    aplicarCambio(jB2, cambioB, resultado.totalGamesB, resultado.totalGamesA, tipoB);
 
     // Persistimos en el propio partido el resultado recalculado.
-    partido.ganadora = resultado.ganoA ? "A" : "B";
+    partido.ganadora = partido.empate ? "E" : resultado.ganoA ? "A" : "B";
     partido.setsGanadosA = resultado.setsGanadosA;
     partido.setsGanadosB = resultado.setsGanadosB;
     partido.totalGamesA = resultado.totalGamesA;
@@ -139,6 +150,7 @@ async function registrarPartido(datos) {
     parejaA: datos.parejaA,
     parejaB: datos.parejaB,
     sets: datos.sets,
+    empate: !!datos.empate,
     editado: false,
     editadoEn: null,
   };
@@ -165,6 +177,7 @@ async function editarPartido(id, datos) {
     parejaA: datos.parejaA,
     parejaB: datos.parejaB,
     sets: datos.sets,
+    empate: !!datos.empate,
     editado: true,
     editadoEn: new Date().toISOString(),
   };

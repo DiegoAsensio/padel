@@ -13,6 +13,7 @@ const CRITERIOS_ORDEN = {
   partidos: (j) => j.partidos,
   victorias: (j) => j.victorias,
   derrotas: (j) => j.derrotas,
+  empates: (j) => j.empates,
   pctVictorias: (j) => j.pctVictorias,
   pctGames: (j) => j.pctGames,
 };
@@ -36,7 +37,7 @@ function calcularStatsJugador(jugador) {
 function renderFormaDots(forma) {
   if (!forma.length) return '<span class="stat-muted">—</span>';
   return `<div class="forma-dots">${forma
-    .map((r) => `<span class="forma-dot ${r === "W" ? "win" : "loss"}"></span>`)
+    .map((r) => `<span class="forma-dot ${r === "W" ? "win" : r === "L" ? "loss" : "draw"}"></span>`)
     .join("")}</div>`;
 }
 
@@ -54,6 +55,7 @@ function renderFilaRanking(jugador, posicion) {
       <td><span class="stat-muted">${jugador.partidos}</span></td>
       <td><span class="stat-muted">${jugador.victorias}</span></td>
       <td><span class="stat-muted">${jugador.derrotas}</span></td>
+      <td><span class="stat-muted">${jugador.empates}</span></td>
       <td><span class="stat-muted">${jugador.pctVictorias}%</span></td>
       <td><span class="stat-muted">${jugador.pctGames}%</span></td>
       <td>${renderFormaDots(jugador.forma)}</td>
@@ -75,7 +77,7 @@ function renderRanking() {
   if (!jugadoresCache) return;
 
   if (!jugadoresCache.length) {
-    cuerpo.innerHTML = `<tr><td colspan="9" class="empty-state">Todavía no hay jugadores cargados.</td></tr>`;
+    cuerpo.innerHTML = `<tr><td colspan="10" class="empty-state">Todavía no hay jugadores cargados.</td></tr>`;
     return;
   }
 
@@ -92,14 +94,14 @@ function renderRanking() {
 /** Trae el estado actual desde SheetDB y dispara el primer render. */
 async function cargarYRenderizarRanking() {
   const cuerpo = document.getElementById("ranking-body");
-  cuerpo.innerHTML = `<tr><td colspan="9" class="empty-state">Cargando ranking…</td></tr>`;
+  cuerpo.innerHTML = `<tr><td colspan="10" class="empty-state">Cargando ranking…</td></tr>`;
   try {
     const { jugadores } = await obtenerEstadoActual();
     jugadoresCache = jugadoresRankeables(jugadores).map(calcularStatsJugador);
     renderRanking();
   } catch (e) {
     console.error(e);
-    cuerpo.innerHTML = `<tr><td colspan="9" class="empty-state">No se pudo cargar el ranking. Revisá tu conexión a internet e intentá de nuevo.</td></tr>`;
+    cuerpo.innerHTML = `<tr><td colspan="10" class="empty-state">No se pudo cargar el ranking. Revisá tu conexión a internet e intentá de nuevo.</td></tr>`;
   }
 }
 

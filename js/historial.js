@@ -73,14 +73,19 @@ function renderFilaEquipo(jugadores, { ids, sets, lado, setsGanados, cambio, esG
 }
 
 function renderTarjetaPartido(partido, jugadores) {
+  const esEmpate = !!partido.empate;
   const ganoA = partido.ganadora === "A";
   const cambioA = partido.cambios[partido.parejaA[0]] ?? 0;
   const cambioB = partido.cambios[partido.parejaB[0]] ?? 0;
 
+  const metaTexto = esEmpate
+    ? `Empate · +${PUNTOS_EMPATE} Elo para los 4 · cargado ${formatearHora(partido.creadoEn)}`
+    : `Mejor de ${partido.formato} · cargado ${formatearHora(partido.creadoEn)}`;
+
   return `
-    <article class="match-card">
+    <article class="match-card ${esEmpate ? "match-card--empate" : ""}">
       <div class="match-card__meta">
-        <span>Mejor de ${partido.formato} · cargado ${formatearHora(partido.creadoEn)}${partido.editado ? ` · <span class="match-card__editado">editado</span>` : ""}</span>
+        <span>${metaTexto}${partido.editado ? ` · <span class="match-card__editado">editado</span>` : ""}</span>
       </div>
       <div class="match-rows">
         ${renderFilaEquipo(jugadores, {
@@ -89,7 +94,7 @@ function renderTarjetaPartido(partido, jugadores) {
           lado: "A",
           setsGanados: partido.setsGanadosA,
           cambio: cambioA,
-          esGanadora: ganoA,
+          esGanadora: !esEmpate && ganoA,
         })}
         ${renderFilaEquipo(jugadores, {
           ids: partido.parejaB,
@@ -97,7 +102,7 @@ function renderTarjetaPartido(partido, jugadores) {
           lado: "B",
           setsGanados: partido.setsGanadosB,
           cambio: cambioB,
-          esGanadora: !ganoA,
+          esGanadora: !esEmpate && !ganoA,
         })}
       </div>
       <div class="match-card__actions">

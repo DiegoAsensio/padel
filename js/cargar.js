@@ -17,6 +17,7 @@
 let seleccionOrden = []; // ids de jugadores, en orden de selección (máx. 4)
 let formatoActual = 3;
 let valoresSets = []; // [{gamesA, gamesB}, ...] longitud = formatoActual
+let empateActivo = false;
 let modoEdicion = false;
 let idEnEdicion = null;
 
@@ -209,7 +210,24 @@ function generarSets(formato, setsIniciales) {
 }
 
 function leerSetsCargados() {
+  if (empateActivo) return [];
   return valoresSets.filter((s) => s.gamesA > 0 || s.gamesB > 0);
+}
+
+/* ---------------------------------------------------------------------
+   EMPATE — cuando el partido termina empatado no hay sets que definir:
+   se ocultan los steppers y se saltea la resolución de ganador/Elo.
+   --------------------------------------------------------------------- */
+
+function actualizarVisibilidadSets() {
+  const contenedorSets = document.getElementById("sets-inputs");
+  contenedorSets.style.display = empateActivo ? "none" : "";
+}
+
+function alternarEmpate(activo) {
+  empateActivo = activo;
+  actualizarVisibilidadSets();
+  actualizarPreview();
 }
 
 /* ---------------------------------------------------------------------
@@ -219,9 +237,24 @@ function leerSetsCargados() {
 function actualizarPreview() {
   const preview = document.getElementById("preview-panel");
   const parejas = obtenerSeleccionParejas();
+
+  if (!parejas) {
+    preview.innerHTML = `<span class="stat-muted">Completá las 2 parejas para ver la vista previa.</span>`;
+    return;
+  }
+
+  if (empateActivo) {
+    preview.innerHTML = `
+      <div class="preview-row"><span>Resultado</span><strong>Empate</strong></div>
+      <div class="preview-row"><span>Cambio Elo para los 4 jugadores</span><strong>+${PUNTOS_EMPATE}</strong></div>
+      <div class="preview-row"><span class="stat-muted">El Invitado no suma puntos, como en cualquier partido.</span></div>
+    `;
+    return;
+  }
+
   const sets = leerSetsCargados();
 
-  if (!parejas || !sets.length) {
+  if (!sets.length) {
     preview.innerHTML = `<span class="stat-muted">Completá las 2 parejas y al menos un set para ver la vista previa.</span>`;
     return;
   }
@@ -276,11 +309,13 @@ function mostrarFeedback(mensaje, tipo) {
 function validarFormulario(parejas, sets, fecha) {
   if (!fecha) return "Elegí la fecha del partido.";
   if (!parejas) return "Elegí 4 jugadores: 2 para cada pareja.";
+  if (empateActivo) return null;
+
   if (!sets.length) return "Cargá el resultado de al menos un set.";
 
   const resultado = resolverGanadorPartido(sets);
   if (resultado.setsGanadosA === resultado.setsGanadosB) {
-    return "El partido no puede terminar empatado en sets: revisá los resultados cargados.";
+    return "El partido no puede terminar empatado en sets: revisá los resultados cargados, o marcá la opción \"Fue empate\" si así terminó.";
   }
   return null;
 }
@@ -292,7 +327,8 @@ function resetearFormulario() {
   const formatoSeleccionado = document.querySelector('input[name="formato"]:checked')?.value || 3;
   generarSets(formatoSeleccionado);
   document.getElementById("fecha-partido").value = fechaHoyLocal();
-  actualizarPreview();
+  document.getElementById("check-empate").checked = false;
+  alternarEmpate(false);
   document.getElementById("feedback-banner").className = "feedback-banner";
 }
 
@@ -309,7 +345,7 @@ async function manejarSubmit(event) {
     return;
   }
 
-  const datos = { fecha, formato: formatoActual, parejaA: parejas.parejaA, parejaB: parejas.parejaB, sets };
+  const datos = { fecha, formato: formatoActual, parejaA: parejas.parejaA, parejaB: parejas.parejaB, sets, empate: empateActivo };
 
   const botonGuardar = document.getElementById("btn-guardar");
   const textoOriginalBoton = botonGuardar.textContent;
@@ -350,6 +386,9 @@ function activarModoEdicion(partido) {
   seleccionOrden = [...partido.parejaA, ...partido.parejaB];
   document.querySelector(`input[name="formato"][value="${partido.formato}"]`).checked = true;
   document.getElementById("fecha-partido").value = partido.fecha;
+  document.getElementById("check-empate").checked = !!partido.empate;
+  empateActivo = !!partido.empate;
+  actualizarVisibilidadSets();
 
   renderChips();
   actualizarResumenParejas();
@@ -382,6 +421,7 @@ async function inicializarFormulario() {
   });
 
   document.getElementById("fecha-partido").addEventListener("change", actualizarPreview);
+  document.getElementById("check-empate").addEventListener("change", (e) => alternarEmpate(e.target.checked));
   document.getElementById("btn-limpiar").addEventListener("click", resetearFormulario);
   document.getElementById("form-cargar-partido").addEventListener("submit", manejarSubmit);
 

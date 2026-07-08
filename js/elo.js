@@ -22,6 +22,13 @@
 const ELO_K = 20;
 
 /**
+ * Puntos fijos que se suman a los 4 jugadores cuando un partido se carga
+ * como empate. No hay ganador ni perdedor: los 4 suman lo mismo (el
+ * Invitado, como siempre, no suma nada porque su Elo queda fijo).
+ */
+const PUNTOS_EMPATE = 5;
+
+/**
  * Divisor de la fórmula de probabilidad esperada. 400 es el estándar de
  * ajedrez. Se probaron valores más bajos (100, luego 250) para que el
  * sistema reaccionara más rápido con pocos partidos jugados, a costa de

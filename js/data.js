@@ -48,9 +48,10 @@ const JUGADORES_SEED = [
   partidos: 0,
   victorias: 0,
   derrotas: 0,
+  empates: 0,
   gamesFavor: 0,
   gamesContra: 0,
-  forma: [], // últimos resultados: "W" | "L", más reciente al final
+  forma: [], // últimos resultados: "W" | "L" | "E", más reciente al final
 }));
 
 /**
@@ -79,6 +80,7 @@ function partidoAFila(partido) {
     parejaA: JSON.stringify(partido.parejaA),
     parejaB: JSON.stringify(partido.parejaB),
     sets: JSON.stringify(partido.sets),
+    empate: partido.empate ? "true" : "false",
     editado: partido.editado ? "true" : "false",
     editadoEn: partido.editadoEn || "",
   };
@@ -93,6 +95,7 @@ function filaAPartido(fila) {
     parejaA: JSON.parse(fila.parejaA || "[]"),
     parejaB: JSON.parse(fila.parejaB || "[]"),
     sets: JSON.parse(fila.sets || "[]"),
+    empate: String(fila.empate).toLowerCase() === "true",
     editado: String(fila.editado).toLowerCase() === "true",
     editadoEn: fila.editadoEn || null,
   };

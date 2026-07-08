@@ -320,6 +320,11 @@ main {
   border-color: var(--color-loss);
 }
 
+.forma-dot.draw {
+  background: var(--color-glass);
+  border-color: var(--color-glass);
+}
+
 .empty-state {
   padding: var(--space-5);
   text-align: center;
@@ -629,8 +634,23 @@ main {
   background: var(--color-ball);
 }
 
+.pill-option--empate {
+  margin-bottom: var(--space-3);
+}
+
+.pill-option--empate input:checked + span {
+  border-color: var(--color-glass);
+  color: var(--color-bg);
+  background: var(--color-glass);
+}
+
+.match-card--empate {
+  border-color: var(--color-glass);
+}
+
 .step-hint {
   margin-bottom: var(--space-3);
+  margin-top: var(--space-3);
   display: block;
 }
 
